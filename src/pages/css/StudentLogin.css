@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Advent+Pro:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Saira+Condensed:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.leaf {
+    width: 100%;
+    height: fit-content;
+}
+
+.leaf img {
+    width: 50rem;
+    margin: 0;
+}
+
+.create_acc{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 2rem 0 2rem 0;
+}
+
+.create_acc .p1{
+    font-family: 'Saira Condensed';
+    font-size: 4rem;
+    font-weight: 600;
+}
+
+.create_acc span{
+    font-size: 5rem;
+}
+
+.create_acc .p2{
+    font-family: 'Advent Pro';
+    font-size: 3rem;
+}
+
+.form-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-logo img {
+    width: 22rem;
+    margin-top: 0rem;
+}
+
+.vl {
+    border-left: 1rem solid rgb(255, 255, 255);
+    height: 100%;
+    border-top-left-radius: 50rem;
+    border-bottom-left-radius: 50rem;
+    /* position: absolute; */
+    left: 50%;
+    margin-left: -3px;
+    box-shadow: -5px 0px 10px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(255, 255, 255);
+    /* border-top-left-radius: 2rem; */
+    /* border-bottom-left-radius: 2rem; */
+    padding: 0 5rem 0 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: max-content;
+    font-family: 'Inter';
+}
+
+form .p2 {
+    color: grey;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    margin: 2rem 0 1rem 0;
+}
+
+form .p3 {
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: center;
+    margin: 1rem;
+}
+
+.social-img {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.social-img img {
+
+    width: 1.5rem;
+}
+
+label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    width: 100%;
+    font-weight: 100;
+}
+
+button[type="submit"] {
+    padding: 1rem 2rem;
+    background-color: #34C759;
+    color: #fff;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all ease-in 0.2s;
+}
+
+button[type="submit"]:hover {
+    background-color: #2E865F;
+}
+
+.login_std {
+    text-decoration: none;
+    color: green;
+}
+
+@media only screen and (max-width: 1300px) {
+    .container {
+        flex-direction: column;
+        padding: 0 2rem;
+    }
+
+    .leaf {
+        width: 100%;
+        height: auto;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .leaf img {
+        max-width: 45rem;
+        width: 100%;
+        height: auto;
+    }
+
+    .vl {
+        display: none; /* No need for visibility: hidden */
+    }
+
+    .form-container {
+        padding: 0;
+        max-width: 40rem; /* Prevent stretching */
+        width: 100%;
+    }
+
+    .create_acc .p1 {
+        font-size: 3rem; /* Slightly smaller for better mobile UI */
+    }
+
+    .create_acc .p2 {
+        font-size: 2.5rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        padding: 0.9rem;
+        font-size: 1rem;
+    }
+
+    button[type="submit"] {
+        padding: 0.9rem 1.8rem;
+        font-size: 1rem;
+    }
+}
+
+@media only screen and (max-width: 768px) { 
+    .create_acc {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .create_acc .p1 {
+        font-size: 2rem;
+    }
+
+    .create_acc .p2 {
+        font-size: 1.8rem;
+    }
+
+    .leaf img {
+        max-width: 100%;
+        width: 90%;
+    }
+
+    .form-container {
+        padding: 0;
+        max-width: 30rem; /* Prevent stretching */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    button[type="submit"] {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .create_acc .p1 {
+        font-size: 1.5rem;
+    }
+
+    .create_acc .p2 {
+        font-size: 1.2rem;
+    }
+
+    .leaf img {
+        max-width: 90%;
+    }
+
+    .form-container {
+        max-width: 25rem; /* Prevents excessive stretching */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        padding: 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    button[type="submit"] {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+    }
+}
