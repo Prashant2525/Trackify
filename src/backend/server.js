@@ -5,8 +5,12 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js";
 import connectCloudinary from "./config/cloudinary.js";
 import userRouter from "./routes/userRoute.js";
-import projectRouter from "./routes/projectRoute.js";
+import AdminProjectRouter from "./routes/AdminProjectRoute.js";
 import submissionRouter from "./routes/submissionRoute.js";
+import markingRouter from "./routes/markingAndVerificationRoute.js";
+import StudentProjectRouter from "./routes/StudentProjectRoute.js";
+import weeklyTaskRouter from "./routes/weeklyTaskRoute.js";
+import listTaskRouter from "./routes/listTaskRoute.js";
 
 //configuration
 const app = express();
@@ -22,8 +26,12 @@ app.use(cors({credentials: true}));
 
 //endpoints
 app.use('/api/user', userRouter);
-app.use('/api/projects', projectRouter);
-app.use('/api/submission', submissionRouter)
+app.use('/api/projects', AdminProjectRouter);
+app.use('/api/projects', StudentProjectRouter);
+app.use('/api/submission', submissionRouter);
+// app.use('/api/marking', markingRouter);
+app.use('/api/weekly-tasks', weeklyTaskRouter);
+app.use('/api/list', listTaskRouter);
 
 app.get("/", (req, res) => {})
 
