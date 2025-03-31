@@ -91,7 +91,7 @@ const AdminLogin = () => {
           </div>
 
           <p className="p3">
-            Already have an account? <Link to="/student_login" className="login_adm">Login</Link>
+            Already have an account? <Link to="/admin_login" className="login_adm">Login</Link>
           </p>
         </form>
       </div>

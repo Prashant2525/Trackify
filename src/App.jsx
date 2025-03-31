@@ -1,8 +1,8 @@
 import React from 'react';
 import { Routes, Route, Navigate } from "react-router-dom";
 import GlobalLogin from './components/GlobalLogin';
-import StudentLogin from './pages/StudentLogin';
-import AdminLogin from './pages/AdminLogin';
+import StudentLogin from './pages/StudentRegister';
+import AdminLogin from './pages/AdminRegister';
 import StudentMain from './pages/StudentMain';
 import AdminMain from './pages/AdminMain';
 
