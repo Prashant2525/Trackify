@@ -38,14 +38,18 @@ const listProjects = async (req, res) => {
 
 const removeProject = async (req, res) => {
     try {
-        const { id } = req.params;
+        //One way to delete a project
+        // const { id } = req.params;
 
+        //Another way to delete a project
+        const { id } = req.body;
         const deletedProject = await projectModel.findByIdAndDelete(id);
+
         if (!deletedProject) {
             return res.status(404).json({ message: "Project not found" });
         }
 
-        res.status(200).json({ message: "Project deleted successfully" });
+        res.status(200).json({success: true, message: "Project deleted successfully" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal Server Error" });

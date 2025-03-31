@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import userModel from '../models/userModel.js';
 
-const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' })
-}
+const createToken = (id, isAdmin) => {
+    return jwt.sign({ id, isAdmin }, process.env.JWT_SECRET, { expiresIn: '1h' });
+};
 
 //Route for student login
 const loginUser = async (req, res) => {
@@ -92,6 +92,7 @@ const loginAdmin = async (req, res) => {
         }
 
         const token = createToken(admin._id, admin.isAdmin);
+
         res.status(200).json({ success: true, message: "Admin logged in successfully!", token });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

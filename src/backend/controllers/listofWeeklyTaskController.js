@@ -17,4 +17,21 @@ const getWeeklyTasks = async (req, res) => {
     }
 };
 
-export { getWeeklyTasks };
+const singleTask = async (req, res) => {
+    try {
+        const { weekID } = req.body;
+
+        const task = await weeklyTaskModel.findById(weekID);
+
+        if(!task){
+            return res.status(404).json({success: false, message: "Task not found." });
+        }
+
+        res.status(200).json({ success: true, task });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export { getWeeklyTasks, singleTask };
