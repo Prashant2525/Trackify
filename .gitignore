@@ -24,7 +24,10 @@ dist-ssr
 *.sw?
 /node_modules
 
-#misc
 # Misc
 .env
-.env*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging.local
