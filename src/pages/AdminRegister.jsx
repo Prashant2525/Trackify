@@ -1,34 +1,35 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import "./css/AdminLogin.css"
+import "./css/AdminLogin.css";
 import black_logo from "../assets/img/black_logo.png";
+import TextField from "@mui/material/TextField";
 
-const AdminLogin = () => {
+
+const AdminRegister = () => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
     // TODO: Add authentication logic
-    navigate('/admin_main');
+    navigate("/admin_main");
   };
 
   const [formData, setFormData] = useState({
-      fullName: "",
-      email: "",
-      password: "",
-    });
-  
-    const handleChange = (e) => {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      handleLogin();
-      console.log("Form Submitted:", formData);
-      // TODO: authentication logic
-    };
-  
+    fullName: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleLogin();
+    console.log("Form Submitted:", formData);
+    // TODO: authentication logic
+  };
 
   return (
     <div className="container">
@@ -40,7 +41,9 @@ const AdminLogin = () => {
 
       <div className="form-container">
         <div className="form-logo">
-          <Link to={"/"}><img src={black_logo} alt="Logo" /></Link>
+          <Link to={"/"}>
+            <img src={black_logo} alt="Logo" />
+          </Link>
         </div>
 
         <div className="create_acc">
@@ -50,15 +53,25 @@ const AdminLogin = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="sign-up">
-          <label htmlFor="fullName">Fullname</label>
-          <input
+          
+          <TextField
+            className="custom-textfield"
+            type="text"
+            name="fullName"
+            id="outlined-textarea"
+            label="Enter Full Name"
+            placeholder="e.g John Doe"
+            multiline
+            required
+          />
+          {/* <input
             type="text"
             name="fullName"
             placeholder="Enter Full Name"
             value={formData.fullName}
             onChange={handleChange}
             required
-          />
+          /> */}
 
           <label htmlFor="email">Email</label>
           <input
@@ -85,13 +98,25 @@ const AdminLogin = () => {
           <p className="p2">- OR -</p>
 
           <div className="social-img">
-            <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="Facebook" />
-            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" alt="Google" />
-            <img src="https://cdn-icons-png.flaticon.com/512/0/747.png" alt="Apple" />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/300/300221.png"
+              alt="Facebook"
+            />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png"
+              alt="Google"
+            />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/0/747.png"
+              alt="Apple"
+            />
           </div>
 
           <p className="p3">
-            Already have an account? <Link to="/admin_login" className="login_adm">Login</Link>
+            Already have an account?{" "}
+            <Link to="/admin_login" className="login_adm">
+              Login
+            </Link>
           </p>
         </form>
       </div>
@@ -99,4 +124,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default AdminRegister;

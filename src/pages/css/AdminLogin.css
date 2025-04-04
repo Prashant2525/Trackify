@@ -125,6 +125,15 @@ label {
     margin-bottom: 0.5rem;
 }
 
+.custom-textfield .MuiInputBase-root {
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+    width: 100%;
+    font-weight: 100;
+    border-color: black !important;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="password"] {

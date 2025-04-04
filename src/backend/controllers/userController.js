@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import userModel from '../models/userModel.js';
+import transporter from '../config/nodemailer.js';
 
 const createToken = (id, isAdmin) => {
     return jwt.sign({ id, isAdmin }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -27,6 +28,24 @@ const loginUser = async (req, res) => {
 
         //JWT token
         const token = createToken(user._id, user.isAdmin);
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production'? 'none' : 'strict',
+            maxAge: 60 * 60 * 1000, // 1 hour
+        })
+
+        //Sending welcome email
+        // const mailOptions = {
+        //     from: process.env.SENDER_EMAIL,
+        //     to: email,
+        //     subject: "Welcome to Trackify",
+        //     text: "Thank you for registering with Trackify. We are glad to have you on board!",
+        // };
+
+        // await transporter.sendMail(mailOptions);
+
         res.status(200).json({ succuss: true, message: "User logged in successfully!", token })
 
     } catch (error) {
@@ -66,6 +85,24 @@ const registerUser = async (req, res) => {
         const user = await newUser.save();
 
         const token = createToken(user._id, user.isAdmin);
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production'? 'none' : 'strict',
+            maxAge: 60 * 60 * 1000, // 1 hour
+        })
+
+        //Sending welcome email
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: email,
+            subject: "Welcome to Trackify",
+            text: "Thank you for registering with Trackify. We are glad to have you on board!",
+        };
+
+        await transporter.sendMail(mailOptions);
+
         res.status(201).json({ succuss: true, message: "User registered successfully!", token })
 
     } catch (error) {
@@ -92,6 +129,13 @@ const loginAdmin = async (req, res) => {
         }
 
         const token = createToken(admin._id, admin.isAdmin);
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production'? 'none' : 'strict',
+            maxAge: 60 * 60 * 1000, // 1 hour
+        })
 
         res.status(200).json({ success: true, message: "Admin logged in successfully!", token });
     } catch (error) {
@@ -135,10 +179,42 @@ const registerAdmin = async (req, res) => {
 
         const token = createToken(admin._id, admin.isAdmin);
 
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production'? 'none' : 'strict',
+            maxAge: 60 * 60 * 1000, // 1 hour
+        })
+
+        //Sending welcome email
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: email,
+            subject: "Welcome to Trackify",
+            // text: "Thank you for registering with Trackify. We are glad to have you on board!",
+            html: '<h1>Thank you for registering with Trackify.</h1><p>We are glad to have you on our universe</p>'
+        };
+
+        await transporter.sendMail(mailOptions);
+
         res.status(201).json({ success: true, message: "admin created successfully" })
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 }
 
-export { loginUser, registerUser, loginAdmin, registerAdmin };
+const logout = async (req, res) => {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production'? 'none' : 'strict',
+        })
+
+        return res.status(200).json({ success: true, message: "User logged out successfully!" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+export { loginUser, registerUser, loginAdmin, registerAdmin, logout };

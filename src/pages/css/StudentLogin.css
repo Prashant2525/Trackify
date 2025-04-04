@@ -136,6 +136,11 @@ input[type="password"] {
     font-weight: 100;
 }
 
+/* i am using this for placeholder text in student login form */
+input[placeholder]{
+    font-weight: 500;
+}
+
 button[type="submit"] {
     padding: 1rem 2rem;
     background-color: #34C759;

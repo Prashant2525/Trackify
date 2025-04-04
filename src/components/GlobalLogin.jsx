@@ -16,13 +16,13 @@ const GlobalLogin = () => {
         <p>Login or Sign-up as</p>
         <div className="main_log">
           <div className="student">
-            <Link to="/student_login">Student</Link>
+            <Link to="/student_register">Student</Link>
           </div>
           <div className="ver_line">
             <span>|</span>
           </div>
           <div className="admin">
-            <Link to="/admin_login">Admin</Link>
+            <Link to="/admin_register">Admin</Link>
           </div>
         </div>
       </div>

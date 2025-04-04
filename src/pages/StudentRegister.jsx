@@ -5,7 +5,7 @@ import "./css/StudentLogin.css";
 import black_logo from "../assets/img/black_logo.png";
 
 
-const StudentLogin = () => {
+const StudentRegister = () => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
@@ -108,4 +108,4 @@ const StudentLogin = () => {
   );
 };
 
-export default StudentLogin;
+export default StudentRegister;
