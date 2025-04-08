@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 /node_modules
+/src/backend/.env
 
 # Misc
 .env
