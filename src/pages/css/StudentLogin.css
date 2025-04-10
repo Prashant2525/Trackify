@@ -125,9 +125,9 @@ label {
     margin-bottom: 0.5rem;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"] {
+.student-sign-up input[type="text"],
+.student-sign-up input[type="email"],
+.student-sign-up input[type="password"] {
     padding: 1rem;
     margin-bottom: 2rem;
     border: 1px solid #ccc;
@@ -136,8 +136,9 @@ input[type="password"] {
     font-weight: 100;
 }
 
+
 /* i am using this for placeholder text in student login form */
-input[placeholder]{
+.student-sign-up input[placeholder]{
     font-weight: 500;
 }
 

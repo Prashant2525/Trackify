@@ -50,7 +50,7 @@ const StudentRegister = () => {
           <p className="p2">Student Portal</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="sign-up">
+        <form onSubmit={handleSubmit} className="student-sign-up">
           <label htmlFor="fullName">Fullname</label>
           <input
             type="text"

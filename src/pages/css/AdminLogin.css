@@ -134,16 +134,49 @@ label {
     border-color: black !important;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-    padding: 1rem;
-    margin-bottom: 2rem;
+.inside_form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-left: 1rem;
     border: 1px solid #ccc;
+    border-radius: 1.5rem;
+    background-color: #596168;
+    margin-bottom: 1rem;
+    height: auto;
+}
+
+.inside_form img{
+    width: 2rem;
+    height: 2rem;
+}
+
+.admin-sign-up input[type="text"],
+.admin-sign-up input[type="email"],
+.admin-sign-up input[type="password"] {
+    padding: 1rem;
+    /* margin-bottom: 2rem; */
+    /* border: 1px solid #ccc; */
+    border: none;
     border-radius: 1rem;
     width: 100%;
-    font-weight: 100;
+    font-size: 1.2rem;
+    font-weight: 500;
+    background: transparent;
+    outline: none;
+    color: rgb(190, 188, 188);
+    margin-left: 10px;
 }
+
+
+.admin-sign-up input::placeholder{
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: rgb(190, 188, 188)
+}
+
 
 button[type="submit"] {
     padding: 1rem 2rem;
@@ -153,6 +186,7 @@ button[type="submit"] {
     border-radius: 1rem;
     cursor: pointer;
     transition: all ease-in 0.2s;
+    margin-top: 2rem;
 }
 
 button[type="submit"]:hover {

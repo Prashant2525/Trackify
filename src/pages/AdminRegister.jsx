@@ -3,10 +3,14 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./css/AdminLogin.css";
 import black_logo from "../assets/img/black_logo.png";
-import TextField from "@mui/material/TextField";
-
+import profile_icon from "../assets/img/profile-user.png";
+import email_icon from "../assets/img/email.png";
+import padlock_icon from "../assets/img/padlock.png";
+// import TextField from "@mui/material/TextField";
 
 const AdminRegister = () => {
+  const [state, setState] = useState("Sign Up");
+
   const navigate = useNavigate();
 
   const handleLogin = () => {
@@ -47,14 +51,15 @@ const AdminRegister = () => {
         </div>
 
         <div className="create_acc">
-          <p className="p1">Create Account</p>
+          <p className="p1">
+            {state === "Sign Up" ? "Create Account" : "Login"}
+          </p>
           <span>|</span>
           <p className="p2">Admin Portal</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="sign-up">
-          
-          <TextField
+        <form onSubmit={handleSubmit} className="admin-sign-up">
+          {/* <TextField
             className="custom-textfield"
             type="text"
             name="fullName"
@@ -63,37 +68,46 @@ const AdminRegister = () => {
             placeholder="e.g John Doe"
             multiline
             required
-          />
-          {/* <input
-            type="text"
-            name="fullName"
-            placeholder="Enter Full Name"
-            value={formData.fullName}
-            onChange={handleChange}
-            required
           /> */}
+          {state === "Sign Up" && (
+            <div className="inside_form">
+              <img src={profile_icon} alt="user profile" />
+              <input
+                type="text"
+                name="fullName"
+                placeholder="Full Name"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          )}
 
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter Your Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+          <div className="inside_form">
+            <img src={email_icon} alt="user profile" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email ID"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter Your Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          <div className="inside_form">
+            <img src={padlock_icon} alt="user profile" />
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter Your Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <button type="submit">Sign Up</button>
+          <button type="submit">{state}</button>
 
           <p className="p2">- OR -</p>
 
@@ -112,12 +126,21 @@ const AdminRegister = () => {
             />
           </div>
 
-          <p className="p3">
-            Already have an account?{" "}
-            <Link to="/admin_login" className="login_adm">
-              Login
-            </Link>
-          </p>
+          {state === "Sign Up" ? (
+            <p className="p3">
+              Already have an account?{" "}
+              <p onClick={() => setState("Login")} className="login_adm">
+                Login
+              </p>
+            </p>
+          ) : (
+            <p className="p3">
+              Don't have an account?{" "}
+              <p onClick={() => setState("Sign Up")} className="login_adm">
+                Sign Up
+              </p>
+            </p>
+          )}
         </form>
       </div>
     </div>
