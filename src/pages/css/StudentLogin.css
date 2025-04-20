@@ -136,6 +136,10 @@ label {
     font-weight: 100;
 }
 
+.inside_std_form{
+    display: flex;
+    flex-direction: column;
+}
 
 /* i am using this for placeholder text in student login form */
 .student-sign-up input[placeholder]{

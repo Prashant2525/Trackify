@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./css/AdminLogin.css";
@@ -6,33 +6,65 @@ import black_logo from "../assets/img/black_logo.png";
 import profile_icon from "../assets/img/profile-user.png";
 import email_icon from "../assets/img/email.png";
 import padlock_icon from "../assets/img/padlock.png";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 // import TextField from "@mui/material/TextField";
 
 const AdminRegister = () => {
-  const [state, setState] = useState("Sign Up");
-
   const navigate = useNavigate();
+  const { backendUrl, setIsAdminLoggedIn,  getAdminData} = useContext(AppContext);
 
-  const handleLogin = () => {
-    // TODO: Add authentication logic
-    navigate("/admin_main");
-  };
+  const [state, setState] = useState("Sign Up");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-  });
+  const onSubmithandler = async (e) => {
+    try {
+      e.preventDefault();
+      axios.defaults.withCredentials = true;
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+      if (state === "Sign Up") {
+        const { data } = await axios.post(
+          backendUrl + "/api/user/admin/register",
+          {
+            name,
+            email,
+            password,
+          }
+        );
+        console.log(data)
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleLogin();
-    console.log("Form Submitted:", formData);
-    // TODO: authentication logic
+        if (data.success) {
+          toast.success("Successfully registered");
+          setIsAdminLoggedIn(true);
+          getAdminData();
+          navigate("/admin_main");
+        } else {
+          toast.error(data.message);
+        }
+      } else {
+        const { data } = await axios.post(
+          backendUrl + "/api/user/admin/login",
+          {
+            email,
+            password,
+          }
+        );
+
+        if (data.success) {
+          toast.success("Logged in successfully");
+          setIsAdminLoggedIn(true);
+          getAdminData();
+          navigate("/admin_main");
+        }else{
+          toast.error(data.message);
+        }
+      }
+    } catch (error) {
+      toast.error(error.response ? error.response.data.message : error.message);
+    }
   };
 
   return (
@@ -58,7 +90,7 @@ const AdminRegister = () => {
           <p className="p2">Admin Portal</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="admin-sign-up">
+        <form onSubmit={onSubmithandler} className="admin-sign-up">
           {/* <TextField
             className="custom-textfield"
             type="text"
@@ -76,8 +108,10 @@ const AdminRegister = () => {
                 type="text"
                 name="fullName"
                 placeholder="Full Name"
-                value={formData.fullName}
-                onChange={handleChange}
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
                 required
               />
             </div>
@@ -89,8 +123,10 @@ const AdminRegister = () => {
               type="email"
               name="email"
               placeholder="Email ID"
-              value={formData.email}
-              onChange={handleChange}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              value={email}
               required
             />
           </div>
@@ -101,11 +137,20 @@ const AdminRegister = () => {
               type="password"
               name="password"
               placeholder="Enter Your Password"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
               required
             />
           </div>
+
+          <p
+            onClick={() => navigate("/reset_password")}
+            className="mb-4 text-indigo-500 cursor-pointer"
+          >
+            Forget password?
+          </p>
 
           <button type="submit">{state}</button>
 
@@ -129,16 +174,16 @@ const AdminRegister = () => {
           {state === "Sign Up" ? (
             <p className="p3">
               Already have an account?{" "}
-              <p onClick={() => setState("Login")} className="login_adm">
+              <span onClick={() => setState("Login")} className="login_adm">
                 Login
-              </p>
+              </span>
             </p>
           ) : (
             <p className="p3">
               Don't have an account?{" "}
-              <p onClick={() => setState("Sign Up")} className="login_adm">
+              <span onClick={() => setState("Sign Up")} className="login_adm">
                 Sign Up
-              </p>
+              </span>
             </p>
           )}
         </form>

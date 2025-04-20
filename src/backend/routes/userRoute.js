@@ -1,9 +1,10 @@
 import express from 'express';
-import { loginUser, registerUser, loginAdmin, registerAdmin, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOtp, resetPassword } from '../controllers/userController.js';
+import { getUser, loginUser, registerUser, loginAdmin, registerAdmin, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOtp, resetPassword } from '../controllers/userController.js';
 import userAuth from '../middleware/userAuth.js';
 
 const userRouter = express.Router();
 
+userRouter.get('/data', userAuth, getUser);
 userRouter.post('/register', registerUser);
 userRouter.post('/login', loginUser);
 userRouter.post('/admin/register', registerAdmin);

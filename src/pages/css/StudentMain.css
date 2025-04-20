@@ -1,0 +1,282 @@
+@import url('https://fonts.googleapis.com/css2?family=Advent+Pro:ital,wght@0,100..900;1,100..900&family=Inter:ital,wght@0,100..900;1,100..900&family=Saira+Condensed:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.stdmain_content {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  background-color: #6e6e6e;
+}
+
+/* Left Sidebar Styling */
+.stdmain_left_sidebar {
+  width: 280px;
+  background-color: #02111B;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  margin: 1rem;
+  border-radius: 1rem;
+}
+
+.stdmain_logo {
+  padding: 10px 20px 30px;
+}
+
+.stdmain_logo img {
+  width: 140px;
+  height: auto;
+}
+
+.stdmain_profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  height: calc(100% - 100px);
+}
+
+.main_avatar {
+  width: 100px;
+  height: 100px;
+  background: #353a40;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.stdmain_profile-info {
+  width: 100%;
+  background-color: #242121;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.stdmain_profile-name,
+.stdmain_profile-id {
+  background-color: #707579;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.stdmain_profile-id {
+  margin-bottom: 0;
+}
+
+.stdmain_edit-profile-btn {
+  background: #4a4e57;
+  color: #fff;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 6px;
+  margin: 10px 0;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.stdmain_edit-profile-btn:hover {
+  background: #61656e;
+}
+
+.stdmain_logout-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 12px 35px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+  position: absolute;
+  bottom: 20px;
+}
+
+.stdmain_logout-btn:hover {
+  background: #c0392b;
+}
+
+/* Main Projects Area */
+.stdmain_projects {
+  flex: 1;
+  background-color: #5F747E;
+  margin: 20px;
+  border-radius: 1rem;
+  padding: 25px;
+  overflow-y: auto;
+}
+
+.projects_title {
+  color: white;
+  margin-bottom: 20px;
+  font-size: 24px;
+  padding: 10px;
+  background-color: rgb(69, 71, 69);
+  width: 100%;
+  left: 0;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.main_projects-table-wrapper {
+  background: #23272d;
+  border-radius: 12px;
+  padding: 15px;
+  overflow: hidden;
+}
+
+.main_projects-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.main_projects-table th,
+.main_projects-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #353a40;
+  color: white;
+}
+
+.main_projects-table th {
+  color: #b0b3b8;
+  font-weight: 600;
+}
+
+.main_apply-btn {
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.main_apply-btn:hover {
+  background: #219150;
+}
+
+.main_apply-btn.join {
+  background: #27ae60;
+}
+
+.main_apply-btn.join:hover {
+  background: #219150;
+}
+
+/* Right Sidebar - Calendar & Progress */
+.stdmain_right_sidebar {
+  width: 340px;
+  margin: 20px 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Calendar Styling */
+.calendar_container {
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.calendar_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.month_year {
+  display: flex;
+  flex-direction: column;
+}
+
+.month {
+  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+}
+
+.subtext {
+  font-size: 12px;
+  color: #777;
+  margin-top: 5px;
+}
+
+.today_btn {
+  background: #4285f4;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.calendar_weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: 500;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.calendar_days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 5px;
+}
+
+.day {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #333;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.day.today {
+  background-color: #4285f4;
+  color: white;
+  font-weight: bold;
+}
+
+/* Progress Container */
+.progress_container {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.5;
+}

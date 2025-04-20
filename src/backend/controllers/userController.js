@@ -8,22 +8,39 @@ const createToken = (id, isAdmin) => {
     return jwt.sign({ id, isAdmin }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
+//Controller for getting user data
+const getUser = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.user.id, 'name email isAdmin reg_num');
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        if (user.isAdmin) {
+            res.status(200).json({ success: true, adminData: { name: user.name, email: user.email, reg_num: user.reg_num } });
+        } else {
+            res.status(200).json({ success: true, userData: { name: user.name, email: user.email, reg_num: user.reg_num } });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 //Controller for student login
 const loginUser = async (req, res) => {
     try {
 
-        const { email, password } = req.body;
+        const {name, reg_num, password } = req.body;
 
-        const user = await userModel.findOne({ email });
+        const user = await userModel.findOne({ reg_num });
 
         if (!user || user.isAdmin) {
-            return res.status(400).json({ succuss: false, message: "User does not exist!" })
+            return res.status(400).json({ success: false, message: "User does not exist!" })
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.status(400).json({ succuss: false, message: "Incorrect password!" })
+            return res.status(400).json({ success: false, message: "Incorrect password!" })
         }
 
         //JWT token
@@ -46,10 +63,10 @@ const loginUser = async (req, res) => {
 
         // await transporter.sendMail(mailOptions);
 
-        res.status(200).json({ succuss: true, message: "User logged in successfully!", token })
+        res.status(200).json({ success: true, message: "User logged in successfully!", token })
 
     } catch (error) {
-        res.status(500).json({ succuss: false, message: error.message })
+        res.status(500).json({ success: false, message: error.message })
     }
 }
 
@@ -64,14 +81,14 @@ const registerUser = async (req, res) => {
         const userExists = await userModel.findOne({ email });
 
         if (userExists) {
-            return res.status(400).json({ succuss: false, message: "User already exists!" })
+            return res.status(400).json({ success: false, message: "User already exists!" })
         }
 
         if (!validator.isEmail(email)) {
-            return res.status(400).json({ succuss: false, message: "Please enter a valid email" })
+            return res.status(400).json({ success: false, message: "Please enter a valid email" })
         }
         if (!validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
-            return res.status(400).json({ succuss: false, message: "Please enter a strong password with at least 8 characters, 1 lowercase letter, 1 uppercase letter, 1 number and 1 symbol" })
+            return res.status(400).json({ success: false, message: "Please enter a strong password with at least 8 characters, 1 lowercase letter, 1 uppercase letter, 1 number and 1 symbol" })
         }
 
         const newUser = new userModel({
@@ -103,11 +120,11 @@ const registerUser = async (req, res) => {
 
         await transporter.sendMail(mailOptions);
 
-        res.status(201).json({ succuss: true, message: "User registered successfully!", token })
+        res.status(201).json({ success: true, message: "User registered successfully!", token })
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({ succuss: false, message: error.message })
+        res.status(500).json({ success: false, message: error.message })
     }
 }
 
@@ -155,8 +172,18 @@ const registerAdmin = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message:
-                    "Please enter a strong password with at least 8 characters, 1 lowercase letter, 1 uppercase letter, 1 number and 1 symbol",
+                    "Please enter a strong password with at least 8 characters, 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol",
             });
+        }
+
+        const lastAdmin = await userModel.findOne({ isAdmin: true }).sort({ reg_num: -1 });
+
+        let newRegNum = "admin_1";
+
+        if (lastAdmin && lastAdmin.reg_num) {
+            const lastRegNum = lastAdmin.reg_num;
+            const lastNumber = parseInt(lastRegNum.split('_')[1]);
+            newRegNum = `admin_${lastNumber + 1}`;
         }
 
         const adminExists = await userModel.findOne({ email });
@@ -173,7 +200,7 @@ const registerAdmin = async (req, res) => {
             email,
             password: hashedPassword,
             isAdmin: true,
-            reg_num: null,
+            reg_num: newRegNum,
         });
 
         const admin = await newAdmin.save();
@@ -185,24 +212,24 @@ const registerAdmin = async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             maxAge: 60 * 60 * 1000, // 1 hour
-        })
+        });
 
-        //Sending welcome email
+        // Sending welcome email
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: email,
             subject: "Welcome to Trackify",
-            // text: "Thank you for registering with Trackify. We are glad to have you on board!",
-            html: '<h1>Thank you for registering with Trackify.</h1><p>We are glad to have you on our universe</p>'
+            html: '<h1>Thank you for registering with Trackify.</h1><p>We are glad to have you on our universe</p>',
         };
 
         await transporter.sendMail(mailOptions);
 
-        res.status(201).json({ success: true, message: "admin created successfully" })
+        res.status(201).json({ success: true, message: "Admin created successfully" });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 
 //Controller for user logout
 const logout = async (req, res) => {
@@ -277,7 +304,7 @@ const verifyEmail = async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid OTP!" });
         }
 
-        if (Date.now() > user.verifyOtpExpireAt) {
+        if (Date.now() > user.verifyOtpExpire) {
             return res.status(400).json({ success: false, message: "OTP expired!" });
         }
 
@@ -388,4 +415,4 @@ const resetPassword = async (req, res) => {
     }
 }
 
-export { loginUser, registerUser, loginAdmin, registerAdmin, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOtp, resetPassword };
+export { getUser, loginUser, registerUser, loginAdmin, registerAdmin, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOtp, resetPassword };
