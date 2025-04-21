@@ -11,14 +11,14 @@ const createToken = (id, isAdmin) => {
 //Controller for getting user data
 const getUser = async (req, res) => {
     try {
-        const user = await userModel.findById(req.user.id, 'name email isAdmin reg_num');
+        const user = await userModel.findById(req.user.id, 'name email isAdmin reg_num isAccountVerified');
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
         if (user.isAdmin) {
-            res.status(200).json({ success: true, adminData: { name: user.name, email: user.email, reg_num: user.reg_num } });
+            res.status(200).json({ success: true, adminData: { _id: user._id, name: user.name, email: user.email, reg_num: user.reg_num, isAdmin: user.isAdmin, isAccountVerified: user.isAccountVerified } });
         } else {
-            res.status(200).json({ success: true, userData: { name: user.name, email: user.email, reg_num: user.reg_num } });
+            res.status(200).json({ success: true, userData: { _id: user._id, name: user.name, email: user.email, reg_num: user.reg_num, isAccountVerified: user.isAccountVerified } });
         }
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -29,7 +29,7 @@ const getUser = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
 
-        const {name, reg_num, password } = req.body;
+        const { name, reg_num, password } = req.body;
 
         const user = await userModel.findOne({ reg_num });
 
@@ -249,10 +249,13 @@ const logout = async (req, res) => {
 //Controller for send verify otp
 const sendVerifyOtp = async (req, res) => {
     try {
+        const { email } = req.body;
 
-        const { userId } = req.body;
+        const user = await userModel.findOne({ email });
 
-        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found!" });
+        }
 
         if (user.isAccountVerified) {
             return res.status(400).json({ success: false, message: "Account already verified!" });
@@ -261,7 +264,7 @@ const sendVerifyOtp = async (req, res) => {
         const otp = String(Math.floor(100000 + Math.random() * 900000));
 
         user.verifyOtp = otp;
-        user.verifyOtpExpired = Date.now() + 300000; //5 minutes
+        user.verifyOtpExpired = Date.now() + 300000; // 5 minutes
 
         await user.save();
 
@@ -270,28 +273,26 @@ const sendVerifyOtp = async (req, res) => {
             to: user.email,
             subject: "Account Verification OTP",
             text: `Your verification OTP is ${otp}. Verify your account using this OTP code within 5 minutes.`
-        }
+        };
 
         await transporter.sendMail(mailOption);
 
-        res.status(200).json({ success: true, message: `Verification OTP sent successfully! on Email: ${user.email}` });
-
+        res.status(200).json({ success: true, message: `Verification OTP sent successfully to Email: ${user.email}` });
 
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 
 //Controller to verify email
 const verifyEmail = async (req, res) => {
-    const { userId, otp } = req.body;
-
-    if (!userId || !otp) {
-        return res.status(400).json({ success: false, message: "Please provide User ID and OTP" });
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+        return res.status(400).json({ success: false, message: "Please provide email and OTP" });
     }
     try {
-
-        const user = await userModel.findById(userId);
+        const user = await userModel.findOne({ email });
         if (!user) {
             return res.status(400).json({ success: false, message: "User does not exist!" });
         }
@@ -328,14 +329,31 @@ const verifyEmail = async (req, res) => {
     }
 }
 
+
 //Connection to check if user is authenticated or not
 const isAuthenticated = async (req, res) => {
     try {
-        return res.status(200).json({ success: true, message: "User is authenticated!" });
+        const user = await userModel.findById(req.user.id, 'name email isAdmin reg_num isAccountVerified');
+        if (!user) {
+            return res.status(401).json({ success: false, message: "Not authenticated" });
+        }
+
+        res.status(200).json({
+            success: true,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                reg_num: user.reg_num,
+                isAdmin: user.isAdmin,
+                isAccountVerified: user.isAccountVerified
+            }
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 
 //Controller to send password reset OTP
 const sendResetOtp = async (req, res) => {

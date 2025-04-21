@@ -1,0 +1,124 @@
+.wts_container {
+    background-color: #0e1016;
+    color: white;
+    border-radius: 5px;
+    width: 800px;
+    max-height: 80vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.wts_title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.wts_table {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.wts_header {
+    display: flex;
+    background-color: #333;
+    padding: 15px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.wts_headerCell {
+    flex: 1;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: left;
+    padding: 0 10px;
+}
+
+.wts_tableBody {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 50vh;
+}
+
+.wts_row {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    background-color: #1a1c22;
+}
+
+.wts_row:nth-child(even) {
+    background-color: #232630;
+}
+
+.wts_cell {
+    flex: 1;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+}
+
+.wts_fileLink {
+    color: #4fc3f7;
+    text-decoration: none;
+}
+
+.wts_fileLink:hover {
+    text-decoration: underline;
+}
+
+.wts_marksInput {
+    width: 80px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.wts_footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.wts_saveButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.wts_saveButton:hover {
+    background-color: #45a049;
+}
+
+.wts_closeButton {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.wts_closeButton:hover {
+    background-color: #d32f2f;
+}
+
+.wts_loading {
+    padding: 30px;
+    text-align: center;
+    font-style: italic;
+    color: #aaa;
+}

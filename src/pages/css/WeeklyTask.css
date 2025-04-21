@@ -1,0 +1,85 @@
+.wt_container {
+    background-color: #0e1016;
+    color: white;
+    border-radius: 5px;
+    width: 500px;
+    padding: 20px;
+}
+
+.wt_title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.wt_form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wt_formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wt_label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.wt_input {
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
+}
+
+.wt_textarea {
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
+    resize: vertical;
+}
+
+.wt_buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.wt_addButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.wt_addButton:hover {
+    background-color: #45a049;
+}
+
+.wt_viewButton {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.wt_viewButton:hover {
+    background-color: #0b7dda;
+}

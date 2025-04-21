@@ -27,6 +27,27 @@ const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const StudentMain = () => {
   const { backendUrl, userData, logout } = useContext(AppContext);
   const [list, setList] = useState([]);
+  console.log(userData)
+
+  const sendVerificationOtp = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      console.log(userData);
+      const { data } = await axios.post(
+        backendUrl + "/api/user/send-verify-otp",
+        { email: userData.email }
+      );
+
+      if (data.success) {
+        navigate("/email_verify");
+        toast.success(data.success);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   const fetchList = async () => {
     try {
@@ -104,7 +125,23 @@ const StudentMain = () => {
             </div>
           </div>
 
-          <button className="stdmain_edit-profile-btn">Edit Profile</button>
+          <div className="stdmain_btn">
+            <button className="stdmain_edit-profile-btn">Edit Profile</button>
+            <div className="stdmain_editpro">
+              <ul>
+                {!userData?.isAccountVerified ? (
+                  <li
+                    onClick={sendVerificationOtp}
+                    className="stdmain_verifyem"
+                  >
+                    Verify Email
+                  </li>
+                ) : (
+                  <li className="stdmain_verifyem">Verified</li>
+                )}
+              </ul>
+            </div>
+          </div>
           <button className="stdmain_logout-btn" onClick={handleLogout}>
             Log out
           </button>

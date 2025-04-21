@@ -1,0 +1,97 @@
+/* Container and Centering */
+.em_container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+  }
+  
+  .em_center_box {
+    position: relative;
+  }
+  
+  /* Card Styling */
+  .em_card {
+    width: 400px;
+    height: auto;
+    padding: 30px 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 5px 20px 0px #d2dae3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Heading */
+  .em_heading {
+    color: red;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  /* Info Text */
+  .em_info {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .em_masked_number {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* OTP Input Fields */
+  .em_inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .em_input_box {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+  
+  .em_input_box:focus {
+    border: 2px solid red;
+    box-shadow: none;
+  }
+  
+  /* Hide number spinners for numeric input (in case changed to number type) */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  /* Validate Button */
+  .em_button_wrap {
+    margin-top: 10px;
+  }
+  
+  .em_validate_btn {
+    width: 140px;
+    height: 40px;
+    border: none;
+    border-radius: 20px;
+    background-color: red;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .em_validate_btn:hover {
+    background-color: #cc0000;
+  }
+  

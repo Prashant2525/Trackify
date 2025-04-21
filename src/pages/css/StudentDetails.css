@@ -1,0 +1,75 @@
+.sd_container {
+    background-color: #0e1016;
+    color: white;
+    border-radius: 5px;
+    width: 800px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.sd_header {
+    display: flex;
+    background-color: #333;
+    padding: 15px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.sd_headerCell {
+    flex: 1;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: left;
+    padding: 0 10px;
+}
+
+.sd_tableBody {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.sd_row {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    background-color: #1a1c22;
+}
+
+.sd_row:nth-child(even) {
+    background-color: #232630;
+}
+
+.sd_cell {
+    flex: 1;
+    padding: 0 10px;
+}
+
+.sd_footer {
+    padding: 15px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sd_nextButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.sd_nextButton:hover {
+    background-color: #45a049;
+}
+
+.sd_loading {
+    padding: 30px;
+    text-align: center;
+    font-style: italic;
+    color: #aaa;
+}
