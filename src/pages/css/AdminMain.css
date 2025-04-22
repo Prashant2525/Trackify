@@ -295,7 +295,7 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 8px;
-    padding: 15px;
+    padding: 5px;
 }
 
 .ad_calendarDay {

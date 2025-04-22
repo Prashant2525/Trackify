@@ -5,7 +5,7 @@ import Project from "../models/projectModel.js";
 
 const createWeeklyTask = async (req, res) => {
     try {
-        const { weekNumber, taskName } = req.body;
+        const { weekNumber, taskName, taskDescription } = req.body;
 
         const weekExist = await WeeklyTask.findOne({ weekNumber });
 
@@ -17,7 +17,7 @@ const createWeeklyTask = async (req, res) => {
             return res.status(403).json({ message: "Only admins can create tasks" });
         }
 
-        const newTask = new WeeklyTask({ weekNumber, taskName });
+        const newTask = new WeeklyTask({ weekNumber, taskName, taskDescription });
         await newTask.save();
 
         res.status(201).json({ message: "Weekly Task Created", weeklyTask: newTask });
@@ -71,34 +71,49 @@ const verifyWeeklyTask = async (req, res) => {
 // (List of Students Who Submitted) it is reflected in admin portal inside student details
 const getStudentProgress = async (req, res) => {
     try {
-        const students = await User.find({ isAdmin: false });
+        const allUsers = await User.find();
+        const allProjects = await Project.find().populate({ path: "students", model: "user" });
 
-        if (!students.length) {
-            return res.status(404).json({ message: "No students found" });
-        }
+        let studentProgress = [];
 
-        let studentProgress = await Promise.all(students.map(async (student) => {
-            const submissions = await Submission.find({ studentID: student._id });
+        for (const student of allUsers) {
+            // Check if student is in any project
+            const project = allProjects.find(p =>
+                p.students.some(s => s._id.toString() === student._id.toString())
+            );
 
-            let totalTasks = await WeeklyTask.countDocuments();
-            let completedTasks = submissions.filter(sub => sub.status === "Done").length;
-            let progressPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+            const projectName = project ? project.name : "Not Assigned";
+            const projectId = project ? project._id : null;
 
-            return {
+            // Count total tasks for this project
+            const totalTasks = await WeeklyTask.countDocuments()
+
+            // Fetch only the submissions of this student in that project
+            const submissions = projectId
+                ? await Submission.find({ studentID: student._id, projectId })
+                : [];
+
+            const doneTasks = submissions.filter(sub => sub.status === "Done").length;
+            const progressPercentage = totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
+
+            studentProgress.push({
                 studentId: student._id,
                 studentName: student.name,
+                projectName: projectName,
                 submittedTasks: submissions.map(sub => ({
+                    weekNumber: sub.weekNumber,
                     taskName: sub.taskName,
                     status: sub.status,
                     progressPercentage: sub.progressPercentage,
                 })),
-                overallProgress: `${progressPercentage.toFixed(2)}%`
-            };
-        }));
+                overallProgress: `${progressPercentage.toFixed(2)}%`,
+            });
+        }
 
-        res.status(200).json({ studentProgress });
+        res.status(200).json({ success: true, studentDetails: studentProgress });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error fetching student progress:", error);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 

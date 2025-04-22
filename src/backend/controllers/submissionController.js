@@ -11,47 +11,67 @@ const submitWeeklyTask = async (req, res) => {
 
         const user = await userModel.findById(userId);
         const project = await projectModel.findOne({ students: userId });
+        const weeklyTask = await weeklyTaskModel.findById(taskId);
 
         if (!project || !user) {
             return res.status(404).json({ message: "User or Project not found" });
         }
 
-        const weeklyTask = await weeklyTaskModel.findById(taskId);
         if (!weeklyTask) {
             return res.status(404).json({ message: "Weekly Task not found" });
         }
 
-        const alreadySubmitted = await submissionModel.findOne({ studentID: userId, projectId: project._id });
+        const alreadySubmitted = await submissionModel.findOne({
+            taskId: taskId,
+            studentID: userId,
+        });
 
         if (alreadySubmitted) {
             return res.status(400).json({
                 success: false,
-                message: `You have already submitted this week's task. Status: ${alreadySubmitted.status}`
+                message: `You have already submitted this week's task. Status: ${alreadySubmitted.status}`,
             });
         }
 
         const image1 = req.files.image1 && req.files.image1[0];
         const image2 = req.files.image2 && req.files.image2[0];
-
         const projectFile1 = req.files.projectFile1 && req.files.projectFile1[0];
         const projectFile2 = req.files.projectFile2 && req.files.projectFile2[0];
 
         const images = [image1, image2].filter((item) => item !== undefined);
         const files = [projectFile1, projectFile2].filter((item) => item !== undefined);
 
-        let imagesUrl = await Promise.all(
+        const imagesUrl = await Promise.all(
             images.map(async (item) => {
-                let result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
+                let result = await cloudinary.uploader.upload(item.path, {
+                    resource_type: "image",
+                });
                 return result.secure_url;
             })
         );
 
-        let fileUrl = await Promise.all(
+        const fileUrl = await Promise.all(
             files.map(async (item) => {
-                let result = await cloudinary.uploader.upload(item.path, { resource_type: 'raw' });
+                let result = await cloudinary.uploader.upload(item.path, {
+                    resource_type: "raw",
+                });
                 return result.secure_url;
             })
         );
+
+        const totalWeeklyTasks = await weeklyTaskModel.countDocuments({
+            projectId: project._id,
+        });
+
+        const submittedTasksCount = await submissionModel.countDocuments({
+            projectId: project._id,
+            studentID: userId,
+        });
+
+        const progressPercentage =
+            totalWeeklyTasks > 0
+                ? Math.round((submittedTasksCount / totalWeeklyTasks) * 100)
+                : 0;
 
         const submissionData = {
             studentName: user.name,
@@ -64,30 +84,18 @@ const submitWeeklyTask = async (req, res) => {
             description,
             images: imagesUrl,
             files: fileUrl,
-            status: "Pending",
-            progressPercentage: 0,
+            status: "Done",
+            progressPercentage,
         };
 
         const submission = new submissionModel(submissionData);
         await submission.save();
 
-        await weeklyTaskModel.findByIdAndUpdate(taskId, {
-            $push: {
-                submissions: {
-                    studentId: user._id,
-                    studentName: user.name,
-                    submissionStatus: "Pending",
-                    submissionFiles: fileUrl,
-                    description,
-                    projectName: project.name,
-                },
-            },
+        res.status(200).json({
+            message: "Task submitted successfully and progress updated.",
         });
-
-        res.status(200).json({ message: "Task submitted successfully and updated in Weekly Task model." });
-
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ message: error.message });
     }
 };

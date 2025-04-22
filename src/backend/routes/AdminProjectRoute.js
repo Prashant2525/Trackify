@@ -7,7 +7,7 @@ const AdminProjectRouter = express.Router();
 
 AdminProjectRouter.post("/add",adminAuth, addProject);
 AdminProjectRouter.get("/list",userAuth, listProjects);
-// AdminProjectRouter.delete("/remove/:id", removeProject);
+AdminProjectRouter.post("/remove", removeProject);
 AdminProjectRouter.delete("/remove",adminAuth, removeProject);
 
 export default AdminProjectRouter;

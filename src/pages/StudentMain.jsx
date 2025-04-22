@@ -3,8 +3,8 @@ import "./css/StudentMain.css";
 import white_logo from "../assets/img/white_logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
-import Apply from "./Apply";
-import Join from "./Join";
+import Apply from "../components/Apply";
+import Join from "../components/Join";
 import axios from "axios";
 import { toast } from "react-toastify";
 

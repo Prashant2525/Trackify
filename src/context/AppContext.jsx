@@ -2,6 +2,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { set } from "mongoose";
 
 export const AppContext = createContext();
 
@@ -13,6 +14,7 @@ export const AppContextProvider = (props) => {
   const [adminData, setAdminData] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [studentDetails, setStudentDetails] = useState(null);
 
   const getAdminData = async () => {
     setLoading(true);
@@ -54,6 +56,25 @@ export const AppContextProvider = (props) => {
     setLoading(false);
   };
 
+  const getStudentDetails = async () => {
+    setLoading(true);
+    try {
+      
+      const {data} = await axios.get(backendUrl + "/api/weekly-tasks/progress", {withCredentials: true});
+      if (data.success && data.studentDetails) {
+        setStudentDetails(data.studentDetails);
+        // setIsStudentLoggedIn(true);
+      } else {
+        setStudentDetails(null);
+        // setIsStudentLoggedIn(false);
+      }
+    } catch (error) {
+      setStudentDetails(null);
+      // setIsStudentLoggedIn(false);
+    }
+    setLoading(false);
+  };
+
   const logout = async () => {
     try {
       await axios.post(
@@ -82,6 +103,8 @@ export const AppContextProvider = (props) => {
     getUserData,
     loading,
     logout,
+    studentDetails,
+    getStudentDetails,
   };
 
   return (

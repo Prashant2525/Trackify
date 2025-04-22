@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import "./css/AdminMain.css";
-import AddProject from "./AddProject";
-import StudentDetails from "./StudentDetails";
-import WeeklyTask from "./WeeklyTask";
-import ViewWeeklyTask from "./ViewWeeklyTask";
+import AddProject from "../components/AddProject";
+import StudentDetails from "../components/StudentDetails";
+import WeeklyTask from "../components/WeeklyTask";
+import ViewWeeklyTask from "../components/ViewWeeklyTask";
 import { useNavigate } from "react-router";
 import { AppContext } from "../context/AppContext";
 import white_logo from "../assets/img/white_logo.png";
@@ -95,12 +95,97 @@ const AdminMain = () => {
     }
   };
 
-  const handleExportData = () => {
-    // Implement export data functionality
-    console.log("Exporting data...");
+  const handleExportData = async () => {
+    try {
+      // Fetch student progress data from the API
+      const response = await axios.get(
+        backendUrl + "/api/weekly-tasks/progress",
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (
+        response.data &&
+        response.data.success &&
+        response.data.studentDetails
+      ) {
+        // Convert the data to CSV format
+        exportToCSV(response.data.studentDetails);
+        toast.success("Student data exported successfully");
+      } else {
+        toast.error("No student data available to export");
+      }
+    } catch (error) {
+      console.error("Error exporting data:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to export student data"
+      );
+    }
   };
 
-  // Get current date for calendar
+  // Function to convert data to CSV and trigger download
+  const exportToCSV = (studentDetails) => {
+    // Define CSV headers
+    const headers = [
+      "Student Name,Student ID,Email,Project Name,Overall Progress,Submitted Tasks",
+    ];
+
+    // Convert student data to CSV rows
+    const studentRows = studentDetails.map((student) => {
+      const {
+        studentName,
+        studentId,
+        projectName,
+        overallProgress,
+        submittedTasks,
+      } = student;
+
+      // Format submitted tasks as a string
+      const tasksInfo =
+        submittedTasks.length > 0
+          ? submittedTasks
+              .map(
+                (task) =>
+                  `Week ${task.weekNumber}: ${task.taskName} (${task.status}, ${task.progressPercentage}%)`
+              )
+              .join("; ")
+          : "No tasks submitted";
+
+      // Return CSV row (note: we don't have email in the data, so leaving it blank)
+      return `"${studentName}","${studentId}","","${projectName}","${overallProgress}","${tasksInfo}"`;
+    });
+
+    // Combine headers and rows
+    const csvContent = [...headers, ...studentRows].join("\n");
+
+    // Create a Blob with the CSV content
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+    // Create a download link and trigger download
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    // Set download attributes with current date in the filename
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD format
+
+    link.setAttribute("href", url);
+    link.setAttribute("download", `student_progress_${formattedDate}.csv`);
+
+    // Append to document, trigger click, and clean up
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Release the object URL
+    URL.revokeObjectURL(url);
+  };
+
+  //! Get current date for calendar
+
   const currentDate = new Date();
   const currentDay = currentDate.getDate();
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
@@ -163,6 +248,8 @@ const AdminMain = () => {
   };
 
   const calendarDays = generateCalendarDays();
+
+  //! Calendar logic end
 
   return (
     <div className="ad_mainContainer">
