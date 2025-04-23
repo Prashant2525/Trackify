@@ -71,7 +71,7 @@ const verifyWeeklyTask = async (req, res) => {
 // (List of Students Who Submitted) it is reflected in admin portal inside student details
 const getStudentProgress = async (req, res) => {
     try {
-        const allUsers = await User.find();
+        const allUsers = await User.find({isAdmin: false});
         const allProjects = await Project.find().populate({ path: "students", model: "user" });
 
         let studentProgress = [];

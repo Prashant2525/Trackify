@@ -348,7 +348,7 @@ const AdminMain = () => {
               <div className="ad_monthYear">
                 {currentMonth} {currentYear}
               </div>
-              <div className="ad_calendarSubInfo">International Math...</div>
+              <div className="ad_calendarSubInfo">Trackify...</div>
               <div className="ad_calendarNote">
                 Explore the wonders of every day
               </div>

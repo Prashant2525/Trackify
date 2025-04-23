@@ -39,7 +39,7 @@ const EmailVerify = () => {
       );
       if (data.success) {
         toast.success(data.success);
-        navigate("/admin_main");
+        navigate("/");
       } else {
         toast.error(data.message);
       }

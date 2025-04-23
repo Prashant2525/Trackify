@@ -16,7 +16,7 @@
 
 /* Left Sidebar Styling */
 .stdmain_left_sidebar {
-  width: 280px;
+  width: auto;
   background-color: #02111B;
   display: flex;
   flex-direction: column;
@@ -30,7 +30,7 @@
 }
 
 .stdmain_logo img {
-  width: 140px;
+  width: 20rem;
   height: auto;
 }
 
@@ -316,4 +316,174 @@
   text-align: center;
   font-size: 15px;
   line-height: 1.5;
+}
+
+
+/* Weekly Task UI Styles */
+.weekly-task-container {
+  background-color: #f5f7fa;
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+}
+
+.weekly-task-title {
+  text-align: center;
+  color: #333;
+  background-color: #333;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.weekly-task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.weekly-task-item {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.weekly-task-week {
+  flex: 0 0 100px;
+  font-weight: 500;
+  color: #333;
+}
+
+.weekly-task-name {
+  flex: 1;
+  font-weight: 400;
+  color: #555;
+}
+
+.weekly-task-view-more {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.weekly-task-view-more:hover {
+  background-color: #45a049;
+}
+
+.no-tasks-message {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+  font-style: italic;
+}
+
+.project-full {
+  color: #d32f2f;
+  font-weight: 500;
+}
+
+.progress-info {
+  padding: 15px;
+  background-color: #f5f7fa;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.progress-info h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.leader-badge {
+  background-color: #2196F3;
+  color: white;
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 18px;
+  color: #666;
+}
+
+/* Team Members Styles */
+.team-members-container {
+  margin-top: 15px;
+}
+
+.team-members-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.team-member-item {
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.member-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.member-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.member-email {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 2px;
+}
+
+.member-leader-badge {
+  background-color: #ff9800;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-left: 1rem;
+}
+
+.weekly-task-completed {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weekly-task-completed::before {
+  content: "✓";
+  margin-right: 5px;
+  font-weight: bold;
 }

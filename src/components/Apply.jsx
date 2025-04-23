@@ -1,30 +1,71 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import "./css/Apply.css";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const Apply = ({ isOpen, onClose, projectName }) => {
-  const [formData, setFormData] = useState({
-    fullname: "",
-    email: "",
-    registrationNumber: "",
-    groupName: "",
-    code: "32556678"
-  });
-  
+const Apply = ({ isOpen, onClose, projectName, projectId, onSuccess }) => {
+  const { backendUrl, userData } = useContext(AppContext);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [registrationNumber, setRegistrationNumber] = useState("");
+  const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const modalRef = useRef(null);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
+  // Pre-fill form with user data
+  useEffect(() => {
+    if (userData) {
+      setName(userData.name || "");
+      setEmail(userData.email || "");
+      setRegistrationNumber(userData.reg_num || "");
+    }
+  }, [userData, isOpen]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Process application data here
-    console.log("Application submitted:", formData);
-    onClose();
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        backendUrl + "/api/projects/take",
+        { projectId },
+        { withCredentials: true }
+      );
+
+      console.log(
+        "🛠 POST /api/projects/take →",
+        response.status,
+        response.data
+      );
+
+      if (response.data.joinCode) {
+        setCode(response.data.joinCode);
+      }
+
+      toast.success(response.data.message || "Project taken successfully");
+
+      // Call the onSuccess callback to update the parent component
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      // Close the modal after a short delay to show the success message
+      setTimeout(() => {
+        onClose();
+      }, 2000);
+    } catch (error) {
+      console.error("Error taking project:", error);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to take project"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle clicks outside the modal
@@ -50,6 +91,7 @@ const Apply = ({ isOpen, onClose, projectName }) => {
     <div className="apply-modal-overlay">
       <div className="apply-modal" ref={modalRef}>
         <div className="apply-modal-content">
+          <h2 className="apply-title">Apply for Project: {projectName}</h2>
           <form onSubmit={handleSubmit}>
             <div className="apply-form-row">
               <div className="apply-form-group">
@@ -58,9 +100,10 @@ const Apply = ({ isOpen, onClose, projectName }) => {
                   type="text"
                   id="fullname"
                   name="fullname"
-                  value={formData.fullname}
-                  onChange={handleChange}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="apply-input"
+                  disabled={true} // Using user data from context
                 />
               </div>
               <div className="apply-form-group">
@@ -68,10 +111,10 @@ const Apply = ({ isOpen, onClose, projectName }) => {
                 <input
                   type="email"
                   id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="apply-input"
+                  disabled={true} // Using user data from context
                 />
               </div>
             </div>
@@ -83,40 +126,38 @@ const Apply = ({ isOpen, onClose, projectName }) => {
                   type="text"
                   id="registrationNumber"
                   name="registrationNumber"
-                  value={formData.registrationNumber}
-                  onChange={handleChange}
+                  value={registrationNumber}
+                  onChange={(e) => setRegistrationNumber(e.target.value)}
                   className="apply-input"
+                  disabled={true} // Using user data from context
                 />
               </div>
-              <div className="apply-form-group">
-                <label htmlFor="groupName">Group Name</label>
+            </div>
+
+            {code && (
+              <div className="apply-form-group code-group">
+                <label htmlFor="code">Code (for others to join)</label>
                 <input
                   type="text"
-                  id="groupName"
-                  name="groupName"
-                  value={formData.groupName}
-                  onChange={handleChange}
-                  className="apply-input"
+                  id="code"
+                  name="code"
+                  value={code}
+                  className="apply-input code-input"
+                  readOnly
                 />
+                <p className="code-note">
+                  Share this code with your team members to join this project
+                </p>
               </div>
-            </div>
-
-            <div className="apply-form-group code-group">
-              <label htmlFor="code">Code (for other to join)</label>
-              <input
-                type="text"
-                id="code"
-                name="code"
-                value={formData.code}
-                onChange={handleChange}
-                className="apply-input code-input"
-                readOnly
-              />
-            </div>
+            )}
 
             <div className="apply-button-container">
-              <button type="submit" className="apply-submit-button">
-                Let's Go
+              <button
+                type="submit"
+                className="apply-submit-button"
+                disabled={loading}
+              >
+                {loading ? "Processing..." : "Let's Go"}
               </button>
             </div>
           </form>

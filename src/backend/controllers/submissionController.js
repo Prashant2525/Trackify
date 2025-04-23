@@ -59,19 +59,25 @@ const submitWeeklyTask = async (req, res) => {
             })
         );
 
-        const totalWeeklyTasks = await weeklyTaskModel.countDocuments({
-            projectId: project._id,
-        });
+        // const totalWeeklyTasks = await weeklyTaskModel.countDocuments({
+        //     projectId: project._id,
+        // });
 
-        const submittedTasksCount = await submissionModel.countDocuments({
-            projectId: project._id,
-            studentID: userId,
-        });
+        // const submittedTasksCount = await submissionModel.countDocuments({
+        //     projectId: project._id,
+        //     studentID: userId,
+        // });
 
-        const progressPercentage =
-            totalWeeklyTasks > 0
-                ? Math.round((submittedTasksCount / totalWeeklyTasks) * 100)
-                : 0;
+        const totalExpectedItems = 4; // image1, image2, projectFile1, projectFile2
+        const submittedItemsCount = images.length + files.length;
+
+        const progressPercentage = Math.round((submittedItemsCount / totalExpectedItems) * 100);
+
+
+        // const progressPercentage =
+        //     totalWeeklyTasks > 0
+        //         ? Math.round((submittedTasksCount / totalWeeklyTasks) * 100)
+        //         : 0;
 
         const submissionData = {
             studentName: user.name,

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import userModel from '../models/userModel.js';
 import transporter from '../config/nodemailer.js';
+import projectModel from '../models/projectModel.js';
 
 const createToken = (id, isAdmin) => {
     return jwt.sign({ id, isAdmin }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -21,6 +22,62 @@ const getUser = async (req, res) => {
             res.status(200).json({ success: true, userData: { _id: user._id, name: user.name, email: user.email, reg_num: user.reg_num, isAccountVerified: user.isAccountVerified } });
         }
     } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+//Controller for getting user data by ID
+const getUserById = async (req, res) => {
+    try {
+        const { userId } = req.query;
+        if (!userId) {
+            return res.status(400).json({ success: false, message: "userId is required" });
+        }
+        const user = await userModel.findById(userId).select("name email reg_num");
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        res.status(200).json({ success: true, userData: user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
+const getStudentProjectDetails = async (req, res) => {
+    try {
+        // Optionally filter by projectId if provided
+        const { projectId } = req.query;
+        let projects;
+        if (projectId) {
+            projects = await projectModel.find({ _id: projectId });
+        } else {
+            projects = await projectModel.find({});
+        }
+
+        // Collect all student ObjectIds from all projects
+        let allStudentIds = [];
+        projects.forEach(project => {
+            if (Array.isArray(project.students)) {
+                allStudentIds = allStudentIds.concat(project.students.map(id => id.toString()));
+            }
+        });
+
+        // Remove duplicates
+        allStudentIds = [...new Set(allStudentIds)];
+
+        if (allStudentIds.length === 0) {
+            return res.status(200).json({ success: true, students: [] });
+        }
+
+        // Fetch user details for all student ids
+        const users = await userModel.find({ _id: { $in: allStudentIds } }, 'name email');
+        // Map to desired output
+        const students = users.map(u => ({ name: u.name, email: u.email }));
+
+        return res.status(200).json({ success: true, students });
+    } catch (error) {
+        console.error("Error in getStudentProjectDetails:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -114,9 +171,20 @@ const registerUser = async (req, res) => {
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: email,
-            subject: "Welcome to Trackify",
+            subject: "Welcome to Trackify 🚀",
             text: "Thank you for registering with Trackify. We are glad to have you on board!",
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                    <h2 style="color: #4CAF50;">Welcome to <span style="color:#2196F3;">Trackify</span>!</h2>
+                    <p>Hi there,</p>
+                    <p>Thank you for registering with <strong>Trackify</strong>. We're thrilled to have you on board!</p>
+                    <p>Start tracking your projects and progress efficiently with our platform.</p>
+                    <br>
+                    <p>Best regards,<br>The Trackify Team</p>
+                </div>
+            `
         };
+
 
         await transporter.sendMail(mailOptions);
 
@@ -218,9 +286,20 @@ const registerAdmin = async (req, res) => {
         const mailOptions = {
             from: process.env.SENDER_EMAIL,
             to: email,
-            subject: "Welcome to Trackify",
-            html: '<h1>Thank you for registering with Trackify.</h1><p>We are glad to have you on our universe</p>',
+            subject: "Welcome to Trackify 🚀",
+            text: "Thank you for registering with Trackify. We are glad to have you on board!",
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                    <h2 style="color: #4CAF50;">Welcome to <span style="color:#2196F3;">Trackify</span>!</h2>
+                    <p>Hi there,</p>
+                    <p>Thank you for registering with <strong>Trackify</strong>. We're thrilled to have you on board!</p>
+                    <p>Start tracking your projects and progress efficiently with our platform.</p>
+                    <br>
+                    <p>Best regards,<br>The Trackify Team</p>
+                </div>
+            `
         };
+
 
         await transporter.sendMail(mailOptions);
 
@@ -272,8 +351,22 @@ const sendVerifyOtp = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: "Account Verification OTP",
-            text: `Your verification OTP is ${otp}. Verify your account using this OTP code within 5 minutes.`
+            text: `Your verification OTP is ${otp}. Verify your account using this OTP code within 5 minutes.`,
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; color: #333;">
+                    <h2 style="color: #4CAF50;">Verify Your Account</h2>
+                    <p>Hello <strong>${user.name || ''}</strong>,</p>
+                    <p>Use the following OTP to verify your account:</p>
+                    <div style="font-size: 24px; font-weight: bold; background: #e0f7fa; padding: 10px 20px; border-radius: 8px; display: inline-block; margin: 10px 0;">
+                        ${otp}
+                    </div>
+                    <p>This OTP is valid for <strong>5 minutes</strong>. Please do not share it with anyone.</p>
+                    <br>
+                    <p>Thanks,<br>The Trackify Team</p>
+                </div>
+            `
         };
+
 
         await transporter.sendMail(mailOption);
 
@@ -317,9 +410,22 @@ const verifyEmail = async (req, res) => {
         const mailOption = {
             from: process.env.SENDER_EMAIL,
             to: user.email,
-            subject: "Account Verified",
-            text: `Your account has been verified successfully!`
-        }
+            subject: "Account Verified ✅",
+            text: `Your account has been verified successfully!`,
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f0fdf4; color: #1e4620;">
+                    <h2 style="color: #16a34a;">🎉 Account Verified Successfully!</h2>
+                    <p>Hello <strong>${user.name || ''}</strong>,</p>
+                    <p>We're happy to let you know that your account has been <strong>successfully verified</strong>.</p>
+                    <p>You can now access all the features of <strong>Trackify</strong> and start managing your projects more efficiently.</p>
+                    <br>
+                    <p>If you did not perform this action, please contact our support immediately.</p>
+                    <br>
+                    <p>Welcome aboard!<br>— The Trackify Team</p>
+                </div>
+            `
+        };
+
 
         await transporter.sendMail(mailOption);
 
@@ -382,8 +488,23 @@ const sendResetOtp = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: "Password Reset OTP",
-            text: `Your Password Reset OTP is ${otp}. Reset your password using this OTP code within 5 minutes.`
-        }
+            text: `Your Password Reset OTP is ${otp}. Reset your password using this OTP code within 5 minutes.`,
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9ff; color: #333;">
+                    <h2 style="color: #3b82f6;">🔐 Password Reset Request</h2>
+                    <p>Hello <strong>${user.name || ''}</strong>,</p>
+                    <p>We received a request to reset your password. Use the OTP below to complete the process:</p>
+                    <div style="font-size: 24px; font-weight: bold; background: #e0f2fe; padding: 10px 20px; border-radius: 8px; display: inline-block; margin: 10px 0;">
+                        ${otp}
+                    </div>
+                    <p>This OTP is valid for <strong>5 minutes</strong>. Do not share it with anyone.</p>
+                    <p>If you did not request a password reset, please ignore this email or contact support.</p>
+                    <br>
+                    <p>Stay secure,<br>The Trackify Team</p>
+                </div>
+            `
+        };
+
 
         await transporter.sendMail(mailOption);
 
@@ -433,4 +554,4 @@ const resetPassword = async (req, res) => {
     }
 }
 
-export { getUser, loginUser, registerUser, loginAdmin, registerAdmin, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOtp, resetPassword };
+export { getUser, getUserById, getStudentProjectDetails, loginUser, registerUser, loginAdmin, registerAdmin, logout, sendVerifyOtp, verifyEmail, isAuthenticated, sendResetOtp, resetPassword };

@@ -7,31 +7,29 @@ const StudentDetails = ({ onClose }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set a mounted flag to ensure data fetching doesn't occur after unmount
     let isMounted = true;
 
     const fetchStudentData = async () => {
       setLoading(true);
       await getStudentDetails();
-      if (isMounted) setLoading(false); // Only set loading state if still mounted
+      if (isMounted) setLoading(false);
     };
 
     if (studentDetails === null || studentDetails.length === 0) {
-      fetchStudentData(); // Fetch data only if it's not already available
+      fetchStudentData();
     } else {
-      setLoading(false); // If data is available, stop loading
+      setLoading(false);
     }
 
     return () => {
-      isMounted = false; // Clean up flag on unmount
+      isMounted = false;
     };
   }, [studentDetails, getStudentDetails]);
 
 
   const handleClose = () => {
-    // Prevent onClose callback during loading state
     if (!loading) {
-      onClose(); // Only close when not loading
+      onClose();
     }
   };
 
